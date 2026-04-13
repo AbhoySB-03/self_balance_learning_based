@@ -32,7 +32,7 @@ class SelfBalancePID(SelfBalanceSim):
     Self Balance Bot implementation using a simple PID controller.
     '''
     # Update() will be called in every Frame in the loop
-    def Update():
+    def Update(self):
         # Make left wheel rotate by 10 rads/s and right wheel by -10 rads/s
         self.apply_input([10,-10], 'velocity')
 
@@ -51,7 +51,7 @@ class SelfBalancePID(SelfBalanceSim):
     Self Balance Bot implementation using a simple PID controller.
     '''
     # Update() will be called in every Frame in the loop
-    def Update():
+    def Update(self):
         # Make left wheel rotate by 10 rads/s and right wheel by -10 rads/s
         states = self.get_states()
         print(f"States: {states}")
