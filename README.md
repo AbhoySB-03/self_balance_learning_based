@@ -14,3 +14,48 @@ PyBullet is used for physics simulation of the robot.
 
 ```bash
 pip install pybullet
+```
+## 2. Working with the code.
+i. Import the class SelfBalanceSim from selfbalancebot.py and then create a class inheriting that. 
+ii. Write overrides for methods like Start(), Update(), PreUpdate(), PostUpdate().
+iii. The method *self.get_states()* will return the states $[\theta, \dot{\theta}, x, \dot{x}]$.
+iv. Using *self.apply_input([wheel_l_vel, wheel_r_vel], mode = 'velocity' or 'torque')*, actuate the wheels.
+
+## 3. Example PID controller
+```python
+from selfbalancebot import SelfBalanceSim   # Importing the class
+import pybullet as pb   # needed incase to call functions from the library
+import numpy as np   # for linear algebra
+
+class SelfBalancePID(SelfBalanceSim):
+    '''
+    Self Balance Bot implementation using a simple PID controller.
+    '''
+    # Start() will be called once before begining the loop. Configure or declare variables here.
+    def Start(self, start_pos=[0,0,0.5], start_orientation=pb.getQuaternionFromEuler([0,0,0]), model_path=r"/urdf/self_balance_bot.urdf"):
+        super().Start(start_pos, start_orientation, model_path)  # Must write this
+
+        # Declaring the PD gains
+        self.Kp = [100, 1]
+        self.Kd = [1, 10]
+
+    # Will be called every frame.
+    def Update(self):
+        # Call this to get the states or store them in self.states variable.
+        self.get_states()
+        # Seperate out the states from the array. self.states = [value of theta, value of theta_dot, value of x, value of x_dot] 
+        theta, theta_dot, x, x_dot = self.states
+
+        # Use the state info to compute the control input using PD law. Here error =  theta -  theta_desired(=0) = theta. error_dot = theta_dot, as theta_desired is constant.
+        wheel_vel = self.Kp[0]*theta - self.Kd[0]*theta_dot
+        # Apply the input to both wheels
+        self.apply_input([wheel_vel, wheel_vel], cmd_type='velocity')
+
+    # This will be called at the end of a Loop, after Physics is applied. Usefull to display or print stuffs for debugging
+    def PostUpdate(self):
+        # Print states for debugging
+        print(f"States: {self.states}")
+
+if __name__ == "__main__":
+     f = SelfBalancePID()
+```
