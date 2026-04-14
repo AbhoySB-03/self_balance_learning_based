@@ -15,7 +15,13 @@ class SelfBalanceSim(PyBulletSimulation):
             js=pb.getJointInfo(self.model, i)
             if js[2] == pb.JOINT_REVOLUTE:
                 self.rev_jnt_ind.append(i)
-        self.apply_input([0,0], cmd_type='torque')
+                pb.setJointMotorControl2(
+                    bodyUniqueId=self.model,
+                    jointIndex=i,
+                    controlMode=pb.VELOCITY_CONTROL,
+                    force=0
+                )
+        
 
     def get_states(self):
         pos, orn = pb.getBasePositionAndOrientation(self.model)
@@ -27,7 +33,7 @@ class SelfBalanceSim(PyBulletSimulation):
         self.states[1] = ang_vel[0]  # theta_dot
         self.states[3] = lin_vel[1]  # x_dot
 
-    def apply_input(self, commands, cmd_type='torque'):
+    def apply_input(self, commands, cmd_type='velocity'):
         if cmd_type == 'torque':
             pb.setJointMotorControlArray(bodyUniqueId=self.model,
                                          jointIndices=self.rev_jnt_ind,
