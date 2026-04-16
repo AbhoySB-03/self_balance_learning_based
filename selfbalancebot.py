@@ -27,6 +27,8 @@ class SelfBalanceSim(PyBulletSimulation):
         self.states[1] = ang_vel[0]  # theta_dot
         self.states[3] = lin_vel[1]  # x_dot
 
+        return self.states
+
     def apply_input(self, commands, cmd_type='torque'):
         if cmd_type == 'torque':
             pb.setJointMotorControlArray(bodyUniqueId=self.model,
