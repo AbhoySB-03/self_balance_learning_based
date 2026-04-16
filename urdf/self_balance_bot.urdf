@@ -1,19 +1,25 @@
 <robot name="self_balance_bot" version="1.0">
+  <joint name="body_link_joint" type="fixed">
+    <origin rpy="0.00000 0.00000 0.00000" xyz="0.00000 0.00000 0.23648"/>
+    <parent link="base_link"/>
+    <child link="body_link"/>
+  </joint>
   <joint name="wheel_left_link_joint" type="continuous">
     <limit effort="50.00000" velocity="157.07001"/>
     <origin rpy="0.00000 1.57080 -0.00000" xyz="0.28374 -0.00000 -0.23648"/>
-    <parent link="base_link"/>
+    <parent link="body_link"/>
     <child link="wheel_left_link"/>
     <axis xyz="0.00000 0.00000 1.00000"/>
   </joint>
   <joint name="wheel_right_link_joint" type="continuous">
     <limit effort="50.00000" velocity="157.07001"/>
     <origin rpy="0.00000 1.57080 -0.00000" xyz="-0.28374 0.00000 -0.23648"/>
-    <parent link="base_link"/>
+    <parent link="body_link"/>
     <child link="wheel_right_link"/>
     <axis xyz="0.00000 0.00000 1.00000"/>
   </joint>
-  <link name="base_link">
+  <link name="base_link"/>
+  <link name="body_link">
     <collision name="body_collision">
       <origin rpy="0.00000 0.00000 -1.57080" xyz="0.00000 0.00000 0.00000"/>
       <geometry>
