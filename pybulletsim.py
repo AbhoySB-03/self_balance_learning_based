@@ -12,7 +12,7 @@ import pybullet_data
 import time
 
 class PyBulletSimulation:
-    def __init__(self, del_t=1/240): 
+    def __init__(self, del_t=1./240.): 
         '''
         PyBulletSimulation
         ===
