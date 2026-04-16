@@ -25,14 +25,16 @@ class SelfBalanceSim(PyBulletSimulation):
 
     def get_states(self):
         pos, orn = pb.getBasePositionAndOrientation(self.model)
+
         euler = pb.getEulerFromQuaternion(orn)
-        self.states[0] = euler[0]  # theta
-        self.states[2] = pos[1]    # x
+        self.states[2] = euler[0]  # theta
+        self.states[0] = pos[1]    # x
         
         lin_vel, ang_vel = pb.getBaseVelocity(self.model)
-        self.states[1] = ang_vel[0]  # theta_dot
-        self.states[3] = lin_vel[1]  # x_dot
+        self.states[3] = ang_vel[0]  # theta_dot
+        self.states[1] = lin_vel[1]  # x_dot
 
+    
     def apply_input(self, commands, cmd_type='velocity'):
         if cmd_type == 'torque':
             pb.setJointMotorControlArray(bodyUniqueId=self.model,
