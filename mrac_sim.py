@@ -7,22 +7,27 @@ from scipy.linalg import solve_continuous_lyapunov
 class MRACController:
     def __init__(self,B, dt=0.001):
         # Initialize your MRAC parameters here (e.g., reference model, adaptation gains)
-        self.Am = np.array(
-            [[0, 1, 0, 0],
-             [-1, -10, 0, 0],
-             [0, 0, 0, 1],
-             [0, 0, -1, -10]]
-        )  # Example reference model dynamics
-        self.Bm = np.array([
-            [0], 
-            [1],
-            [0],
-            [0]])           # Example reference model input
+        # self.Am = np.diag([-10, -1, -10, -1])  # Example reference model dynamics
+        # self.Bm = np.array([
+        #     [1], 
+        #     [0],
+        #     [0],
+        #     [0]])           # Example reference model input
+        self.wn1 = 5.0  # Natural frequency for x
+        self.zeta1 = 1.7  # Natural frequency for theta
+        self.Am = np.array([
+            [0, 1, 0, 0],
+            [-self.wn1**2, -2*self.zeta1*self.wn1, 0, 0],
+            [0, 0, -10, 0],
+            [0, 0, -0, -1]
+        ])
+
+        self.Bm = np.array([[0], [self.wn1**2], [0], [0]])  # Example reference model input
         
-        self.gamma_x = np.array([[10.0]])  # Adaptation gain
-        self.gamma_r = np.array([[10.0]])
-        self.sig_x = np.array([[0.1]])
-        self.sig_r = np.array([[0.1]])
+        self.gamma_x = np.array([[5.0]])  # Adaptation gain
+        self.gamma_r = np.array([[5.0]])
+        self.sig_x = np.array([[1]])
+        self.sig_r = np.array([[1]])
         self.xm = np.zeros(4)  # Reference model states
         self.r = np.zeros(1)  # Reference model input
 
@@ -31,6 +36,7 @@ class MRACController:
         self.dt = dt
 
         self.P = solve_continuous_lyapunov(self.Am.T, -np.eye(4))  # Lyapunov matrix for stability analysis
+        print(self.P)
 
         self.B = B  # Input matrix for the actual system
 
@@ -59,14 +65,17 @@ class SelfBalanceMRAC(SelfBalanceSim):
     def Start(self, start_pos=[0,0,0.5], start_orientation=pb.getQuaternionFromEuler([0,0,0]), model_path=r"/urdf/self_balance_bot.urdf"):
         super().Start(start_pos, start_orientation, model_path)
         # Initialize your MRAC parameters here (e.g., reference model, adaptation gains)
-        self.Controller = MRACController(B=np.array([[0],[1],[0],[2]]), dt=self.dt)   # The B matrix is to be corrected.
+        B=np.array([[0],[12.54],[0],[85.9]])
+
+        self.Controller = MRACController(B=B, dt=self.dt)   # The B matrix is to be corrected.
     def Update(self):
         self.get_states()
-        control_input = self.Controller.get_control_input(self.states, np.zeros(1)).flatten() # Example reference input
-        print(f"States: {self.Controller.Kx}, Control Input: {control_input}")  
-        self.apply_input([control_input[0], control_input[0]], cmd_type='velocity')  # Apply the control input to the system
+        r = np.ones(1)  # Example reference input
+        control_input = self.Controller.get_control_input(self.states, r).flatten() # Example reference input
+        print(f"Kx: {self.Controller.Kx}, Kr: {self.Controller.Kr}, Control Input: {control_input}")  
+        self.apply_input([-control_input[0], -control_input[0]], cmd_type='torque')  # Apply the control input to the system
         # Debugging statement to check states and control input
-        self.Controller.update(self.states, np.zeros(1))  # Update the MRAC controller with the current states and reference
+        self.Controller.update(self.states, r)  # Update the MRAC controller with the current states and reference
 
 if __name__ == "__main__":
-     f = SelfBalanceMRAC()
+     f = SelfBalanceMRAC(del_t=1/240)
