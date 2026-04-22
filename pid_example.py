@@ -13,7 +13,7 @@ class SelfBalancePID(SelfBalanceSim):
 
     def Update(self):
         self.get_states()
-        x, x_dot,theta, theta_dot, = self.states
+        x, x_dot,theta, theta_dot = self.states
         wheel_vel = self.Kp[0]*theta - self.Kd[0]*theta_dot - self.Kd[1]*x_dot
         self.apply_input(wheel_vel, cmd_type='velocity')
 
