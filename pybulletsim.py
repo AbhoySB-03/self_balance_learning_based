@@ -23,9 +23,11 @@ class PyBulletSimulation:
         Start, Update, PreUpdate, and PostUpdate methods.
         
         param del_t: Time step for the simulation (default is 1/240 seconds).
+        
         '''
+        
         self.physicsClient = pb.connect(pb.GUI)
-        self.dt=del_t
+        self.dt=del_t 
         self.running=True
         self.gravity=(0.0,0.0,-9.8)
         pb.setAdditionalSearchPath(pybullet_data.getDataPath())
@@ -34,15 +36,16 @@ class PyBulletSimulation:
         try:
             self.Start()
             while self.running:
-                 if not pb.isConnected():
-                     print("PyBullet connection lost. Stopping simulation.")
-                     self.running = False
-                     break
-                 self.PreUpdate()
-                 self.Update()
-                 pb.stepSimulation()
-                 self.PostUpdate()
-                 time.sleep(self.dt)
+                if not pb.isConnected():
+                    print("PyBullet connection lost. Stopping simulation.")
+                    self.running = False
+                    break
+                self.PreUpdate()
+                 
+                self.Update()
+                pb.stepSimulation()
+                self.PostUpdate()
+                time.sleep(self.dt)
         except KeyboardInterrupt:
             print("Simulation stopped by user.")
         finally:

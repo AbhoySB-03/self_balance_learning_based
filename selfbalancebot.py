@@ -21,7 +21,6 @@ class SelfBalanceSim(PyBulletSimulation):
                     controlMode=pb.VELOCITY_CONTROL,
                     force=0
                 )
-        self.input_limit = 40
 
     def follow_cam(self):
         keys = pb.getKeyboardEvents()
@@ -52,7 +51,6 @@ class SelfBalanceSim(PyBulletSimulation):
         self.states[1] = lin_vel[1]  # x_dot
 
     def apply_input(self, command, cmd_type='velocity'):
-        command = max(min(command,self.input_limit), -self.input_limit)
         if cmd_type == 'torque':
             pb.setJointMotorControlArray(bodyUniqueId=self.model,
                                          jointIndices=self.rev_jnt_ind,
