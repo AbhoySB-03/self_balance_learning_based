@@ -3,9 +3,9 @@ Contains definition of the PyBulletSimulation class, which provides a simple fra
 Imports pybullet, pybullet_data, time modules.
 Authors:
     - [Abhoy Sagar Bhowmik] <eez258580@iitd.ac.in>
-    - [Om Prakash Behera] < >
-    - [Palak Sharma] < >
-    - [Prajwal Sharma] < >
+    - [Om Prakash Behera] <eez258177@iitd.ac.in>
+    - [Palak Sharma] <eez258128@iitd.ac.in>
+    - [Prajwal Sharma] <eez258129@iitd.ac.in >
 '''
 import pybullet as pb
 import pybullet_data
