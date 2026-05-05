@@ -25,6 +25,7 @@ class PyBulletSimulation:
         param del_t: Time step for the simulation (default is 1/240 seconds).
         '''
         self.physicsClient = pb.connect(pb.GUI)
+        pb.setRealTimeSimulation(0)
         self.dt=del_t
         self.running=True
         self.gravity=(0.0,0.0,-9.8)
