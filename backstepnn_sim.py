@@ -137,7 +137,8 @@ class BacksteppingNN:
 class SelfBalanceBNN(SelfBalanceSim):
     def Start(self, start_pos=[0,0,0.5], start_orientation=pb.getQuaternionFromEuler([0,0,0]), model_path=r"/urdf/self_balance_bot.urdf"):
         super().Start(start_pos, start_orientation, model_path)
-        self.Controller = BacksteppingNN(2, 10, 1)
+        self.L = 10
+        self.Controller = BacksteppingNN(2, self.L, 1)
 
     def g(self, x):
         """
@@ -173,16 +174,16 @@ class SelfBalanceBNN(SelfBalanceSim):
         _,_,x1,x2 = self.states
         x = np.array([x1, x2])
 
-        input, e1, e2 = self.Controller.compute_control(x, 0, 0, 0, 5, 5,self.g(x1))
-        
-        input_limit = 4
+        input, e1, e2 = self.Controller.compute_control(x, 0, 0, 0, 20, 20,self.g(x1))
+
+        input_limit = 150
         input_with_limit = min(input_limit, max(-input_limit, input[0]))
         print(input_with_limit)
-        self.apply_input(input_with_limit, 'torque')
+        self.apply_input(input_with_limit)
 
-        self.Controller.update_weights(x, e1, e2, np.eye(11)*30, np.eye(3)*30, 0.1, 0.1, self.dt)
+        self.Controller.update_weights(x, e1, e2, np.eye(self.L+1)*50, np.eye(3)*50, 0.01, 0.01, self.dt)
 
 if __name__=='__main__':
-    f=SelfBalanceBNN(del_t=1/240)
+    f=SelfBalanceBNN()
     
     
