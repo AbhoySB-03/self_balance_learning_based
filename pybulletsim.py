@@ -3,9 +3,9 @@ Contains definition of the PyBulletSimulation class, which provides a simple fra
 Imports pybullet, pybullet_data, time modules.
 Authors:
     - [Abhoy Sagar Bhowmik] <eez258580@iitd.ac.in>
-    - [Om Prakash Behera] < >
-    - [Palak Sharma] < >
-    - [Prajwal Sharma] < >
+    - [Om Prakash Behera] <eez258177@iitd.ac.in>
+    - [Palak Sharma] <eez258128@iitd.ac.in>
+    - [Prajwal Sharma] <eez258129@iitd.ac.in >
 '''
 import pybullet as pb
 import pybullet_data
@@ -23,7 +23,9 @@ class PyBulletSimulation:
         Start, Update, PreUpdate, and PostUpdate methods.
         
         param del_t: Time step for the simulation (default is 1/240 seconds).
+        
         '''
+        
         self.physicsClient = pb.connect(pb.GUI)
         pb.setRealTimeSimulation(0)
         self.dt=del_t
@@ -35,15 +37,16 @@ class PyBulletSimulation:
         try:
             self.Start()
             while self.running:
-                 if not pb.isConnected():
-                     print("PyBullet connection lost. Stopping simulation.")
-                     self.running = False
-                     break
-                 self.PreUpdate()
-                 self.Update()
-                 pb.stepSimulation()
-                 self.PostUpdate()
-                 time.sleep(self.dt)
+                if not pb.isConnected():
+                    print("PyBullet connection lost. Stopping simulation.")
+                    self.running = False
+                    break
+                self.PreUpdate()
+                 
+                self.Update()
+                pb.stepSimulation()
+                self.PostUpdate()
+                time.sleep(self.dt)
         except KeyboardInterrupt:
             print("Simulation stopped by user.")
         finally:

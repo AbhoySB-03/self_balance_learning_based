@@ -173,13 +173,16 @@ class SelfBalanceBNN(SelfBalanceSim):
         _,_,x1,x2 = self.states
         x = np.array([x1, x2])
 
-        input, e1, e2 = self.Controller.compute_control(x, 0, 0, 0, 40, 40,self.g(x1))
+        input, e1, e2 = self.Controller.compute_control(x, 0, 0, 0, 5, 5,self.g(x1))
+        
+        input_limit = 4
+        input_with_limit = min(input_limit, max(-input_limit, input[0]))
+        print(input_with_limit)
+        self.apply_input(input_with_limit, 'torque')
 
-        self.apply_input(input, 'velocity')
-
-        self.Controller.update_weights(x, e1, e2, np.eye(11)*30, np.eye(3)*30, 0.01, 0.01, self.dt)
+        self.Controller.update_weights(x, e1, e2, np.eye(11)*30, np.eye(3)*30, 0.1, 0.1, self.dt)
 
 if __name__=='__main__':
-    f=SelfBalanceBNN(del_t=1/1000)
+    f=SelfBalanceBNN(del_t=1/240)
     
     
